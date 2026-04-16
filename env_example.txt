@@ -1,0 +1,16 @@
+DEBUG=False
+SECRET_KEY=любой_тестовый_ключ_для_мака
+ALLOWED_HOSTS=127.0.0.1,localhost
+CSRF_TRUSTED_ORIGINS=http://127.0.0.1:8000,http://localhost:8000
+
+# Настройки базы данных (Сайт будет читать их под именами DB_..., а Postgres под именами POSTGRES_...)
+DB_NAME=beach_stars_db
+POSTGRES_DB=beach_stars_db
+
+DB_USER=db_user
+POSTGRES_USER=db_user
+
+DB_PASS=5679867vova
+POSTGRES_PASSWORD=5679867vova
+
+DB_HOST=db

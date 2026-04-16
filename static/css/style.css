@@ -1,0 +1,16 @@
+/* static/css/style.css */
+body::before {
+    content: ""; /* Обязательное свойство */
+    position: fixed; /* Закрепить фон, чтобы он не прокручивался */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Поместить под основной контент */
+    background-image: url('../images/image_1.png'); /* Путь относительно папки static/css */
+    background-repeat: no-repeat;
+    background-position: left center; /* Размещение слева, по центру по вертикали */
+    /* Установим размер, например, auto-высота 80% от высоты экрана, чтобы мяч был виден, но не огромен. */
+    background-size: auto 80vh;
+    opacity: 0.4; /* Установим сильную прозрачность, чтобы фон не мешал тексту. Настрой этот параметр (0.15 - 15% видимости). */
+}

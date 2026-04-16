@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Рейтинг игроков     BEACH STARS{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h1 class="display-5 fw-bold text-primary">⭐ Рейтинг игроков</h1>
+    <p class="lead">Топ лучших игроков по версии BEACH STARS</p>
+</div>
+
+<ul class="nav nav-pills justify-content-center mb-4" id="ratingTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="men-tab" data-bs-toggle="pill" data-bs-target="#men" type="button" role="tab" aria-controls="men" aria-selected="true">
+            Мужчины
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="women-tab" data-bs-toggle="pill" data-bs-target="#women" type="button" role="tab" aria-controls="women" aria-selected="false">
+            Женщины
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="ratingTabContent">
+    
+    <div class="tab-pane fade show active" id="men" role="tabpanel" aria-labelledby="men-tab">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4" style="width: 100px;">Место</th>
+                            <th>Игрок</th>
+                            <th class="text-center">Рейтинг</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for athlete in male_athletes %}
+                        <tr>
+                            <td class="ps-4">
+                                {% if forloop.counter == 1 %}
+                                    <span class="badge bg-warning text-dark"> 1</span>
+                                {% elif forloop.counter == 2 %}
+                                    <span class="badge bg-secondary"> 2</span>
+                                {% elif forloop.counter == 3 %}
+                                    <span class="badge bg-danger-subtle text-danger"> 3</span>
+                                {% else %}
+                                    <span class="text-muted ms-2">{{ forloop.counter }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'athlete_detail' athlete.id %}" class="text-decoration-none fw-bold text-dark d-block">
+                                    {{ athlete.last_name }} {{ athlete.first_name }}
+                                </a>
+                            </td>
+                            <td class="text-center">
+                                <span class="fw-bold text-primary">{{ athlete.rating }}</span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-4">Нет данных о рейтинге</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="women" role="tabpanel" aria-labelledby="women-tab">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4" style="width: 100px;">Место</th>
+                            <th>Игрок</th>
+                            <th class="text-center">Рейтинг</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for athlete in female_athletes %}
+                        <tr>
+                            <td class="ps-4">
+                                {% if forloop.counter == 1 %}
+                                    <span class="badge bg-warning text-dark"> 1</span>
+                                {% elif forloop.counter == 2 %}
+                                    <span class="badge bg-secondary"> 2</span>
+                                {% elif forloop.counter == 3 %}
+                                    <span class="badge bg-danger-subtle text-danger"> 3</span>
+                                {% else %}
+                                    <span class="text-muted ms-2">{{ forloop.counter }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'athlete_detail' athlete.id %}" class="text-decoration-none fw-bold text-dark d-block">
+                                    {{ athlete.last_name }} {{ athlete.first_name }}
+                                </a>
+                            </td>
+                            <td class="text-center">
+                                <span class="fw-bold text-primary">{{ athlete.rating }}</span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-4">Нет данных о рейтинге</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BEACH STARS{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        body { 
+        /* Градиент слева (белый) направо (нежно-голубой) */
+        background: linear-gradient(to right, #ffffff, #a2d4f6);
+        /* Фиксируем фон, чтобы при скролле страницы вниз градиент не обрывался и не повторялся */
+        background-attachment: fixed; 
+    }
+        .custom-navbar { 
+        background: linear-gradient(to right, #ffffff, #a2d4f6);
+    }
+        .navbar-brand { font-weight: bold; color: #007bff !important; }
+        /* Убрал margin-top: 50px, так как теперь мы используем mt-auto */
+        .footer { padding: 20px 0; color: #6c757d; border-top: 1px solid #dee2e6; }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <nav class="navbar navbar-expand-lg shadow-sm mb-4 custom-navbar">
+        <div class="container"> 
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <img src="{% static 'images/image_1.png' %}" 
+                     alt="Logo" 
+                     width="40" 
+                     height="40" 
+                     class="d-inline-block align-top me-2">
+                BEACH STARS
+            </a>
+            
+            <div class="navbar-nav">
+                <a class="nav-link" href="{% url 'home' %}">Турниры</a>
+                <a class="nav-link" href="{% url 'leaderboard' %}">Рейтинг</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container flex-grow-1">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer class="footer text-center mt-auto">
+        <div class="container">
+            <p> Система управления турнирами </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

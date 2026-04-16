@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Профиль: {{ athlete.first_name }} {{ athlete.last_name }} - BEACH STARS{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'leaderboard' %}">Рейтинг</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ athlete.last_name }} {{ athlete.first_name }}</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 text-center py-4">
+            <div class="card-body">
+                {% if athlete.gender == 'M' %}
+    <img src="{% static 'images/boy_ava.png' %}" alt="Игрок" width="95" class="mb-3">
+
+{% elif athlete.gender == 'F' %}
+    <img src="{% static 'images/girl_ava.png' %}" alt="Игрок" width="100" class="mb-3">
+
+{% else %}
+    <img src="{% static 'images/image_1.png' %}" alt="Мяч" width="100" class="mb-3">
+{% endif %}
+                <h1 class="fw-bold mb-3">{{ athlete.first_name }} {{ athlete.last_name }}</h1>
+                
+                <h4 class="text-muted mb-0">
+                    Рейтинг: 
+                    <span class="badge bg-primary fs-4 align-middle ms-2">{{ athlete.rating }}</span>
+                </h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="fw-bold mb-4">История турниров</h3>
+
+{% if teams %}
+    <div class="card shadow-sm border-0 mb-5">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Турнир</th>
+                        <th>Дата</th>
+                        <th>Лига</th>
+                        <th class="text-center">Место</th>
+                        <th class="pe-4 text-end">Очки</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team in teams %}
+                    <tr>
+                        <td class="ps-4 fw-bold">
+                            <a href="{% url 'tournament_detail' team.tournament.id %}" class="text-decoration-none text-dark">
+                                {{ team.tournament.name }}
+                            </a>
+                        </td>
+                        <td class="text-muted">{{ team.tournament.date|date:"d.m.Y" }}</td>
+                        <td>
+                            <span class="badge bg-light text-dark border">{{ team.league.name }}</span>
+                        </td>
+                        <td class="text-center">
+                            {% if team.place %}
+                                <span class="badge bg-secondary rounded-pill">{{ team.place }}</span>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="pe-4 text-end text-success fw-bold">
+                            {% if team.earned_points > 0 %}+{{ team.earned_points }}{% else %}0{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-info text-center py-4 border-0 shadow-sm" role="alert">
+        <h5 class="alert-heading fw-bold mb-2">Нет данных</h5>
+        <p class="mb-0">Этот спортсмен еще не принимал участия в турнирах.</p>
+    </div>
+{% endif %}
+
+{% endblock %}
