@@ -135,5 +135,5 @@ if csrf_trusted_env:
     CSRF_TRUSTED_ORIGINS = [url.strip() for url in csrf_trusted_env.split(',')]
 else:
     CSRF_TRUSTED_ORIGINS = []
-
+USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
