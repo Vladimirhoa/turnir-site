@@ -25,3 +25,4 @@ staticfiles/
 .DS_Store
 .vscode/
 .idea/
+Turnir/management/

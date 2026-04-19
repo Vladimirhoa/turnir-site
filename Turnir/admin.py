@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import League, Tournament, Team
+from .models import League, Tournament, Team, Match # Не забудьте импортировать Match!
 
 @admin.register(League)
 class LeagueAdmin(admin.ModelAdmin):
@@ -9,6 +9,11 @@ class TeamInline(admin.TabularInline):
     model = Team
     extra = 1
     fields = ('player_1', 'player_2', 'league', 'place')
+
+class MatchInline(admin.TabularInline):
+    model = Match
+    extra = 1
+    fields = ('court', 'stage', 'team1', 'team2', 'referee', 'team1_score', 'team2_score', 'is_finished')
 
 @admin.register(Tournament)
 class TournamentAdmin(admin.ModelAdmin):
@@ -26,4 +31,12 @@ class TournamentAdmin(admin.ModelAdmin):
             'fields': ('allowed_gender', 'is_finished')
         }),
     )
-    inlines = [TeamInline]
+    inlines = [TeamInline, MatchInline] 
+
+
+@admin.register(Match)
+class MatchAdmin(admin.ModelAdmin):
+    list_display = ('tournament', 'court', 'stage', 'team1', 'team2', 'team1_score', 'team2_score', 'is_finished')
+    list_filter = ('tournament', 'court', 'is_finished', 'stage')
+    list_editable = ('team1_score', 'team2_score', 'is_finished')
+    search_fields = ('team1__player_1__last_name', 'team2__player_1__last_name')

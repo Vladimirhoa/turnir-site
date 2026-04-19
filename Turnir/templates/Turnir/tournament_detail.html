@@ -15,24 +15,13 @@
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
                 <h2 class="h4 fw-bold mb-3">🏆 {{ tournament.name }}</h2>
-                
                 <ul class="list-unstyled">
                     <li class="mb-2"><strong> Дата:</strong> {{ tournament.date|date:"d.m.Y" }}</li>
-                    <li class="mb-2"><strong> Категория:</strong> {{tournament.get_age_category_display}}</li>
-                    {% if tournament.start_time %}
-                        <li class="mb-2"><strong>Время:</strong> {{ tournament.start_time|time:"H:i" }} — 
-                            {% if tournament.end_time %}{{ tournament.end_time|time:"H:i" }}{% else %}до конца{% endif %}
-                        </li>
-                    {% endif %}
-                    {% if tournament.address %}
-                        <li class="mb-2"><strong>Место:</strong> {{ tournament.address }}</li>
-                    {% endif %}
-
+                    <li class="mb-2"><strong> Категория:</strong> {{ tournament.get_age_category_display }}</li>
                     <li class="mb-3"><strong>Формат:</strong> 
                         <span class="badge bg-info-subtle text-info">{{ tournament.get_allowed_gender_display }}</span>
                     </li>
                 </ul>
-
                 <div class="d-grid">
                     {% if tournament.is_finished %}
                         <div class="alert alert-success text-center py-2 mb-0">Турнир завершен</div>
@@ -42,80 +31,109 @@
                 </div>
             </div>
         </div>
-
-        {% if tournament.is_finished and tournament.final_photo %}
-            <div class="card shadow-sm border-0 overflow-hidden mb-4">
-                <img src="{{ tournament.final_photo.url }}" class="img-fluid" alt="Итоговое фото">
-            </div>
-        {% endif %}
     </div>
 
     <div class="col-lg-8">
-        {% if tournament.is_finished %}
-            <h3 class="mb-4 fw-bold">Итоговые результаты</h3>
-            
-                        {% regroup teams by league as leagues_list %}
-            {% for league in leagues_list %}
-                
-                {% if league.grouper %} <div class="card shadow-sm border-0 mb-4">
-                        <div class="card-header bg-primary text-white fw-bold">
-                            Лига: {{ league.grouper.name }}
+        <ul class="nav nav-pills mb-4" id="tournamentTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="results-tab" data-bs-toggle="pill" data-bs-target="#results" type="button" role="tab">
+                    {% if tournament.is_finished %}Результаты{% else %}Участники{% endif %}
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="matches-tab" data-bs-toggle="pill" data-bs-target="#matches" type="button" role="tab">
+                    Расписание матчей
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="tournamentTabContent">
+            <div class="tab-pane fade show active" id="results" role="tabpanel">
+                {% if tournament.is_finished %}
+                    {% regroup teams by league as leagues_list %}
+                    {% for league in leagues_list %}
+                        {% if league.grouper %}
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-header bg-primary text-white fw-bold">Лига: {{ league.grouper.name }}</div>
+                            <div class="card-body p-0">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr><th class="ps-4">Место</th><th>Команда</th><th class="pe-4 text-end">Очки</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for team in league.list %}
+                                        <tr>
+                                            <td class="ps-4 fw-bold">{{ team.place|default:"-" }}</td>
+                                            <td>{{ team.player_1.last_name }} / {{ team.player_2.last_name }}</td>
+                                            <td class="pe-4 text-end text-primary fw-bold">{{ team.earned_points }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="card-body p-0">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th class="ps-4">Место</th>
-                                        <th>Команда</th>
-                                        <th class="pe-4 text-end">Очки</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for team in league.list %}
-                                    <tr>
-                                        <td class="ps-4 fw-bold">{{ team.place|default:"-" }}</td>
-                                        <td>
-                                            <a href="{% url 'athlete_detail' team.player_1.id %}" class="text-decoration-none">{{ team.player_1.last_name }}</a> / 
-                                            <a href="{% url 'athlete_detail' team.player_2.id %}" class="text-decoration-none">{{ team.player_2.last_name }}</a>
-                                        </td>
-                                        <td class="pe-4 text-end text-primary fw-bold">{{ team.earned_points }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="list-group shadow-sm">
+                        {% for team in teams %}
+                        <div class="list-group-item py-3">
+                            {{ forloop.counter }}. <strong>{{ team.player_1.last_name }} / {{ team.player_2.last_name }}</strong>
+                            <span class="badge bg-light text-dark border float-end">{{ team.league.name }}</span>
                         </div>
+                        {% empty %}
+                        <div class="p-4 text-center text-muted">Пока нет заявок.</div>
+                        {% endfor %}
                     </div>
                 {% endif %}
-                
-            {% empty %}
-                <p class="text-muted">Результаты еще не опубликованы.</p>
-            {% endfor %}
-
-
-        {% else %}
-            <h3 class="mb-4 fw-bold">Заявленные участники</h3>
-            <div class="card shadow-sm border-0">
-                <div class="list-group list-group-flush">
-                    {% for team in teams %}
-                    <div class="list-group-item d-flex align-items-center py-3">
-                        <span class="text-muted me-3">{{ forloop.counter }}.</span>
-                        <div class="flex-grow-1">
-                            <a href="{% url 'athlete_detail' team.player_1.id %}" class="fw-bold text-dark text-decoration-none">
-                                {{ team.player_1.last_name }} {{ team.player_1.first_name }}
-                            </a> 
-                            <span class="text-muted mx-1">/</span>
-                            <a href="{% url 'athlete_detail' team.player_2.id %}" class="fw-bold text-dark text-decoration-none">
-                                {{ team.player_2.last_name }} {{ team.player_2.first_name }}
-                            </a>
-                        </div>
-                        <span class="badge bg-light text-dark border">{{ team.league.name }}</span>
-                    </div>
-                    {% empty %}
-                        <div class="p-4 text-center text-muted">Пока нет ни одной заявки. Будь первым!</div>
-                    {% endfor %}
-                </div>
             </div>
-        {% endif %}
+
+            <div class="tab-pane fade" id="matches" role="tabpanel">
+                {% regroup matches by court as matches_by_court %}
+                
+                {% for court_group in matches_by_court %}
+                    <h4 class="fw-bold mb-3 mt-4">🏟️ Корт №{{ court_group.grouper|default:"Не назначен" }}</h4>
+                    <div class="row row-cols-1 g-3">
+                        {% for match in court_group.list %}
+                        <div class="col">
+                            <div class="card shadow-sm border-0 position-relative">
+                                
+                                <span class="position-absolute top-0 start-0 m-2 badge bg-light text-secondary border">
+                                    #{{ forloop.counter }}
+                                </span>
+
+                                <div class="card-body py-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="text-center p-2 rounded {% if match.is_finished and match.who_win == match.team1 %}border border-primary border-3{% endif %}" style="width: 40%;">
+                                            <div class="fw-bold text-truncate">{{ match.team1.player_1.last_name }} / {{ match.team1.player_2.last_name }}</div>
+                                        </div>
+
+                                        <div class="text-center">
+                                            <div class="badge bg-dark fs-5">
+                                                {% if match.team1_score is not None %}{{ match.team1_score }}{% else %}0{% endif %} 
+                                                : 
+                                                {% if match.team2_score is not None %}{{ match.team2_score }}{% else %}0{% endif %}
+                                            </div>
+                                            <div class="small text-muted mt-1">{{ match.stage }}</div>
+                                        </div>
+
+                                        <div class="text-center p-2 rounded {% if match.is_finished and match.who_win == match.team2 %}border border-primary border-3{% endif %}" style="width: 40%;">
+                                            <div class="fw-bold text-truncate">{{ match.team2.player_1.last_name }} / {{ match.team2.player_2.last_name }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-2 small text-muted">
+                                        👤 Судит: {{ match.referee.player_1.last_name|default:"-" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% empty %}
+                    <div class="p-4 text-center text-muted">Матчи еще не созданы.</div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

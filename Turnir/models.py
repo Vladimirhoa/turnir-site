@@ -108,3 +108,40 @@ class Team(models.Model):
     def __str__(self):
         league_name = self.league.name if self.league else "Квал."
         return f"[{league_name}] {self.player_1.last_name} / {self.player_2.last_name}"
+    
+class Match(models.Model): 
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, verbose_name="Турнир")
+    
+    team1 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='matches_as_team1', verbose_name="Команда 1")
+    team2 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='matches_as_team2', verbose_name="Команда 2")
+    
+    referee = models.ForeignKey(Team, on_delete=models.SET_NULL, related_name='matches_as_referee', null=True, blank=True, verbose_name="Судит")
+    
+
+    stage = models.CharField(max_length=50, verbose_name="Стадия турнира", blank=True)
+    is_finished = models.BooleanField(default=False, verbose_name="Матч завершен")
+
+    court = models.PositiveIntegerField(verbose_name="Корт", null=True, blank=True)
+    team1_score = models.PositiveIntegerField(verbose_name="Счет команды 1", null=True, blank=True)
+    team2_score = models.PositiveIntegerField(verbose_name="Счет команды 2", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Матч"
+        verbose_name_plural = "Матчи"
+        ordering = ['is_finished', 'court']
+
+    def __str__(self):
+        stage_str = f" [{self.stage}]" if self.stage else ""
+        return f"{self.team1} - {self.team2}{stage_str}"
+
+    @property
+    def who_win(self):
+        if self.team1_score is None or self.team2_score is None:
+            return None
+            
+        if self.team1_score > self.team2_score:
+            return self.team1
+        elif self.team1_score < self.team2_score:
+            return self.team2
+        else:
+            return None 

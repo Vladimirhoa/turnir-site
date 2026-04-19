@@ -25,9 +25,11 @@
                     <td class="ps-4">{{ forloop.counter }}</td>
                     <td><a href="{% url 'tournament_detail' turnir.id %}" class="text-decoration-none fw-bold text-dark">{{ turnir.name }}</a></td>
                     <td>{{ turnir.date|date:"d.m.Y" }}</td>
-                    <td class="pe-4"><span class="badge bg-primary-subtle text-primary border border-primary-subtle">
-    {{turnir.get_age_category_display}} {{turnir.allowed_gender}}
-</span></td>
+                    <td class="pe-4">
+    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
+        {{turnir.get_age_category_display}} {{turnir.get_allowed_gender_display}}
+    </span>
+</td>
                 </tr>
                 {% endfor %}
             </tbody>

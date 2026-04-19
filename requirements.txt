@@ -2,6 +2,7 @@ asgiref==3.11.1
 asttokens==3.0.1
 decorator==5.2.1
 Django==6.0.4
+Faker==40.15.0
 executing==2.2.1
 gunicorn==25.3.0
 ipython==9.12.0
