@@ -64,7 +64,10 @@
                                         {% for team in league.list %}
                                         <tr>
                                             <td class="ps-4 fw-bold">{{ team.place|default:"-" }}</td>
-                                            <td>{{ team.player_1.last_name }} / {{ team.player_2.last_name }}</td>
+                                            <td>
+                                                <a href="{% url 'athlete_detail' team.player_1.id %}" class="text-decoration-none text-dark">{{ team.player_1.last_name }}</a> / 
+                                                <a href="{% url 'athlete_detail' team.player_2.id %}" class="text-decoration-none text-dark">{{ team.player_2.last_name }}</a>
+                                            </td>
                                             <td class="pe-4 text-end text-primary fw-bold">{{ team.earned_points }}</td>
                                         </tr>
                                         {% endfor %}
@@ -78,7 +81,10 @@
                     <div class="list-group shadow-sm">
                         {% for team in teams %}
                         <div class="list-group-item py-3">
-                            {{ forloop.counter }}. <strong>{{ team.player_1.last_name }} / {{ team.player_2.last_name }}</strong>
+                            {{ forloop.counter }}. <strong>
+                                <a href="{% url 'athlete_detail' team.player_1.id %}" class="text-decoration-none text-dark">{{ team.player_1.last_name }}</a> / 
+                                <a href="{% url 'athlete_detail' team.player_2.id %}" class="text-decoration-none text-dark">{{ team.player_2.last_name }}</a>
+                            </strong>
                             <span class="badge bg-light text-dark border float-end">{{ team.league.name }}</span>
                         </div>
                         {% empty %}
@@ -106,7 +112,8 @@
                                     <div class="text-center p-1 rounded" 
                                          style="width: 38%; border: 2px solid {% if match.is_finished and match.who_win == match.team1 %}#0d6efd{% else %}transparent{% endif %};">
                                         <div class="fw-bold small text-wrap" style="word-wrap: break-word;" title="{{ match.team1.player_1.last_name }} / {{ match.team1.player_2.last_name }}">
-                                            {{ match.team1.player_1.last_name }} / {{ match.team1.player_2.last_name }}
+                                            <a href="{% url 'athlete_detail' match.team1.player_1.id %}" class="text-decoration-none text-dark">{{ match.team1.player_1.last_name }}</a> / 
+                                            <a href="{% url 'athlete_detail' match.team1.player_2.id %}" class="text-decoration-none text-dark">{{ match.team1.player_2.last_name }}</a>
                                         </div>
                                     </div>
 
@@ -121,7 +128,8 @@
                                     <div class="text-center p-1 rounded" 
                                          style="width: 38%; border: 2px solid {% if match.is_finished and match.who_win == match.team2 %}#0d6efd{% else %}transparent{% endif %};">
                                         <div class="fw-bold small text-wrap" style="word-wrap: break-word;" title="{{ match.team2.player_1.last_name }} / {{ match.team2.player_2.last_name }}">
-                                            {{ match.team2.player_1.last_name }} / {{ match.team2.player_2.last_name }}
+                                            <a href="{% url 'athlete_detail' match.team2.player_1.id %}" class="text-decoration-none text-dark">{{ match.team2.player_1.last_name }}</a> / 
+                                            <a href="{% url 'athlete_detail' match.team2.player_2.id %}" class="text-decoration-none text-dark">{{ match.team2.player_2.last_name }}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -130,7 +138,13 @@
                                     {% if match.stage %}
                                         <span class="badge bg-light text-muted fw-normal border">📌 {{ match.stage }}</span>
                                     {% endif %}
-                                    <span class="small text-muted">👤 Судья: {{ match.referee.player_1.last_name|default:"-" }}</span>
+                                    <span class="small text-muted">👤 Судья: 
+                                        {% if match.referee %}
+                                            <a href="{% url 'athlete_detail' match.referee.player_1.id %}" class="text-decoration-none text-muted">{{ match.referee.player_1.last_name }}</a>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </span>
                                 </div>
                             </div>
                         </div>
