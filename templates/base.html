@@ -30,17 +30,19 @@
     <nav class="navbar navbar-expand-lg shadow-sm mb-4 custom-navbar">
         <div class="container"> 
             <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
-                <img src="{% static 'images/image_1.png' %}" 
-                     alt="Logo" 
-                     width="40" 
-                     height="40" 
-                     class="d-inline-block align-top me-2">
+                <img src="{% static 'images/image_1.png' %}" alt="Logo" width="40" height="40" class="d-inline-block align-top me-2">
                 BEACH STARS
             </a>
             
-            <div class="navbar-nav">
-                <a class="nav-link" href="{% url 'home' %}">Турниры</a>
-                <a class="nav-link" href="{% url 'leaderboard' %}">Рейтинг</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav ms-auto text-center mt-2 mt-lg-0">
+                    <a class="nav-link fs-5" href="{% url 'home' %}">Турниры</a>
+                    <a class="nav-link fs-5" href="{% url 'leaderboard' %}">Рейтинг</a>
+                </div>
             </div>
         </div>
     </nav>
