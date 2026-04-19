@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Tournament, Team, Match
 
 def index(request):
-    turnirs = Tournament.objects.all()
+    turnirs = Tournament.objects.all().order_by('-date')
     context = {
         'turnirs': turnirs
     }
