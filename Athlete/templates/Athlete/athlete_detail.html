@@ -4,6 +4,31 @@
 {% block title %}Профиль: {{ athlete.first_name }} {{ athlete.last_name }} - BEACH STARS{% endblock %}
 
 {% block content %}
+<style>
+    /* Стили для кругового прогресс-бара */
+    .progress-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        position: relative;
+    }
+    .progress-circle-inner {
+        width: 100px;
+        height: 100px;
+        background-color: #ffffff;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+    }
+</style>
+
 <nav aria-label="breadcrumb" class="mb-4">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'leaderboard' %}">Рейтинг</a></li>
@@ -13,23 +38,42 @@
 
 <div class="row justify-content-center mb-5">
     <div class="col-lg-8">
-        <div class="card shadow-sm border-0 text-center py-4">
+        <div class="card shadow-sm border-0 py-4">
             <div class="card-body">
-                {% if athlete.gender == 'M' %}
-    <img src="{% static 'images/boy_ava.png' %}" alt="Игрок" width="95" class="mb-3">
+                <div class="text-center mb-4">
+                    {% if athlete.gender == 'M' %}
+                        <img src="{% static 'images/boy_ava.png' %}" alt="Игрок" width="95" class="mb-3">
+                    {% elif athlete.gender == 'F' %}
+                        <img src="{% static 'images/girl_ava.png' %}" alt="Игрок" width="100" class="mb-3">
+                    {% else %}
+                        <img src="{% static 'images/image_1.png' %}" alt="Мяч" width="100" class="mb-3">
+                    {% endif %}
+                    <h1 class="fw-bold mb-1">{{ athlete.first_name }} {{ athlete.last_name }}</h1>
+                </div>
 
-{% elif athlete.gender == 'F' %}
-    <img src="{% static 'images/girl_ava.png' %}" alt="Игрок" width="100" class="mb-3">
+                <div class="row text-center justify-content-center align-items-center mt-4 border-top pt-4">
+                    
+                    <div class="col-sm-4 mb-4 mb-sm-0">
+                        <h6 class="text-muted text-uppercase fw-bold mb-2">Рейтинг</h6>
+                        <span class="badge bg-primary fs-2 rounded-pill px-4">{{ athlete.rating }}</span>
+                    </div>
 
-{% else %}
-    <img src="{% static 'images/image_1.png' %}" alt="Мяч" width="100" class="mb-3">
-{% endif %}
-                <h1 class="fw-bold mb-3">{{ athlete.first_name }} {{ athlete.last_name }}</h1>
-                
-                <h4 class="text-muted mb-0">
-                    Рейтинг: 
-                    <span class="badge bg-primary fs-4 align-middle ms-2">{{ athlete.rating }}</span>
-                </h4>
+                    <div class="col-sm-4 mb-4 mb-sm-0">
+                        <h6 class="text-muted text-uppercase fw-bold mb-3">Доля побед</h6>
+                        <div class="progress-circle shadow-sm" style="background: conic-gradient(#198754 {{ win_percentage }}%, #e9ecef 0);">
+                            <div class="progress-circle-inner shadow-sm">
+                                <span class="fs-3 fw-bold text-success">{{ win_percentage }}%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <h6 class="text-muted text-uppercase fw-bold mb-2">Всего матчей</h6>
+                        <div class="fs-1 fw-bold text-dark lh-1">{{ total_matches }}</div>
+                        <div class="text-success small fw-bold mt-1">Побед: {{ wins }}</div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
