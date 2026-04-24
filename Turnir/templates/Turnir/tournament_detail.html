@@ -11,7 +11,7 @@
 </nav>
 
 <div class="row">
-    <div class="col-lg-4">
+    <div class="col-lg-3">
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
                 <h2 class="h4 fw-bold mb-3">🏆 {{ tournament.name }}</h2>
@@ -33,7 +33,7 @@
         </div>
     </div>
 
-    <div class="col-lg-8">
+    <div class="col-lg-9">
         <ul class="nav nav-pills mb-4" id="tournamentTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="results-tab" data-bs-toggle="pill" data-bs-target="#results" type="button" role="tab">
@@ -48,6 +48,7 @@
         </ul>
 
         <div class="tab-content" id="tournamentTabContent">
+            
             <div class="tab-pane fade show active" id="results" role="tabpanel">
                 {% if tournament.is_finished %}
                     {% regroup teams by league as leagues_list %}
@@ -97,63 +98,90 @@
             <div class="tab-pane fade" id="matches" role="tabpanel">
                 {% regroup matches by court as matches_by_court %}
                 
-                {% for court_group in matches_by_court %}
-                    <h4 class="fw-bold mb-3 mt-4">🏟️ Корт №{{ court_group.grouper|default:"Не назначен" }}</h4>
-                    <div class="row row-cols-1 g-3">
-                        {% for match in court_group.list %}
-                        <div class="card shadow-sm border-0 position-relative">
-                            <span class="position-absolute top-0 start-0 m-2 badge bg-light text-secondary border" style="z-index: 10;">
-                                #{{ forloop.counter }}
-                            </span>
+                {% if matches_by_court %}
+                    <ul class="nav nav-pills mb-3" id="courtsTab" role="tablist">
+                        {% for court_group in matches_by_court %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link {% if forloop.first %}active{% endif %}" 
+                                    id="court-tab-{{ forloop.counter }}" 
+                                    data-bs-toggle="pill" 
+                                    data-bs-target="#court-pane-{{ forloop.counter }}" 
+                                    type="button" role="tab" 
+                                    aria-controls="court-pane-{{ forloop.counter }}" 
+                                    aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+                                Корт №{{ court_group.grouper|default:"Не назначен" }}
+                            </button>
+                        </li>
+                        {% endfor %}
+                    </ul>
 
-                            <div class="card-body py-3">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    
-                                    <div class="text-center p-1 rounded" 
-                                         style="width: 38%; border: 2px solid {% if match.is_finished and match.who_win == match.team1 %}#0d6efd{% else %}transparent{% endif %};">
-                                        <div class="fw-bold small text-wrap" style="word-wrap: break-word;" title="{{ match.team1.player_1.last_name }} / {{ match.team1.player_2.last_name }}">
-                                            <a href="{% url 'athlete_detail' match.team1.player_1.id %}" class="text-decoration-none text-dark">{{ match.team1.player_1.last_name }}</a> / 
-                                            <a href="{% url 'athlete_detail' match.team1.player_2.id %}" class="text-decoration-none text-dark">{{ match.team1.player_2.last_name }}</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="text-center flex-grow-1 px-1">
-                                        <div class="badge bg-dark fs-5 fw-bold px-3">
-                                            {% if match.team1_score is not None %}{{ match.team1_score }}{% else %}0{% endif %} 
-                                            : 
-                                            {% if match.team2_score is not None %}{{ match.team2_score }}{% else %}0{% endif %}
-                                        </div>
-                                    </div>
-
-                                    <div class="text-center p-1 rounded" 
-                                         style="width: 38%; border: 2px solid {% if match.is_finished and match.who_win == match.team2 %}#0d6efd{% else %}transparent{% endif %};">
-                                        <div class="fw-bold small text-wrap" style="word-wrap: break-word;" title="{{ match.team2.player_1.last_name }} / {{ match.team2.player_2.last_name }}">
-                                            <a href="{% url 'athlete_detail' match.team2.player_1.id %}" class="text-decoration-none text-dark">{{ match.team2.player_1.last_name }}</a> / 
-                                            <a href="{% url 'athlete_detail' match.team2.player_2.id %}" class="text-decoration-none text-dark">{{ match.team2.player_2.last_name }}</a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex justify-content-center flex-wrap gap-2 mt-2 pt-2 border-top">
-                                    {% if match.stage %}
-                                        <span class="badge bg-light text-muted fw-normal border">📌 {{ match.stage }}</span>
-                                    {% endif %}
-                                    <span class="small text-muted">👤 Судья: 
-                                        {% if match.referee %}
-                                            <a href="{% url 'athlete_detail' match.referee.player_1.id %}" class="text-decoration-none text-muted">{{ match.referee.player_1.last_name }}</a>
-                                        {% else %}
-                                            -
-                                        {% endif %}
+                    <div class="tab-content" id="courtsTabContent">
+                        {% for court_group in matches_by_court %}
+                        <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" 
+                             id="court-pane-{{ forloop.counter }}" 
+                             role="tabpanel" 
+                             aria-labelledby="court-tab-{{ forloop.counter }}">
+                            
+                            <div class="row row-cols-1 g-4">
+                                {% for match in court_group.list %}
+                                <div class="card shadow-sm border-0 position-relative">
+                                    <span class="position-absolute top-0 start-0 m-2 badge bg-light text-secondary border" style="z-index: 10;">
+                                        #{{ forloop.counter }}
                                     </span>
+
+                                    <div class="card-body py-4">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            
+                                            <div class="text-center p-3 rounded" 
+                                                 style="width: 38%; border: 2px solid {% if match.is_finished and match.who_win == match.team1 %}#0d6efd{% else %}transparent{% endif %};">
+                                                <div class="fw-bold fs-6 text-wrap" style="word-wrap: break-word;" title="{{ match.team1.player_1.last_name }} / {{ match.team1.player_2.last_name }}">
+                                                    <a href="{% url 'athlete_detail' match.team1.player_1.id %}" class="text-decoration-none text-dark">{{ match.team1.player_1.last_name }}</a> / 
+                                                    <a href="{% url 'athlete_detail' match.team1.player_2.id %}" class="text-decoration-none text-dark">{{ match.team1.player_2.last_name }}</a>
+                                                </div>
+                                            </div>
+
+                                            <div class="text-center flex-grow-1 px-2">
+                                                <div class="badge bg-dark fs-4 fw-bold px-4 py-2">
+                                                    {% if match.team1_score is not None %}{{ match.team1_score }}{% else %}0{% endif %} 
+                                                    : 
+                                                    {% if match.team2_score is not None %}{{ match.team2_score }}{% else %}0{% endif %}
+                                                </div>
+                                            </div>
+
+                                            <div class="text-center p-3 rounded" 
+                                                 style="width: 38%; border: 2px solid {% if match.is_finished and match.who_win == match.team2 %}#0d6efd{% else %}transparent{% endif %};">
+                                                <div class="fw-bold fs-6 text-wrap" style="word-wrap: break-word;" title="{{ match.team2.player_1.last_name }} / {{ match.team2.player_2.last_name }}">
+                                                    <a href="{% url 'athlete_detail' match.team2.player_1.id %}" class="text-decoration-none text-dark">{{ match.team2.player_1.last_name }}</a> / 
+                                                    <a href="{% url 'athlete_detail' match.team2.player_2.id %}" class="text-decoration-none text-dark">{{ match.team2.player_2.last_name }}</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-center flex-wrap gap-2 mt-4 pt-3 border-top">
+                                            {% if match.stage %}
+                                                <span class="badge bg-light text-muted fw-normal border">📌 {{ match.stage }}</span>
+                                            {% endif %}
+                                            <span class="small text-muted">👤 Судья: 
+                                                {% if match.referee %}
+                                                    <a href="{% url 'athlete_detail' match.referee.player_1.id %}" class="text-decoration-none text-muted">{{ match.referee.player_1.last_name }}</a>
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
+                                {% endfor %}
                             </div>
+                            
                         </div>
                         {% endfor %}
                     </div>
-                {% empty %}
+                {% else %}
                     <div class="p-4 text-center text-muted">Матчи еще не созданы.</div>
-                {% endfor %}
+                {% endif %}
             </div>
+
         </div>
     </div>
 </div>
