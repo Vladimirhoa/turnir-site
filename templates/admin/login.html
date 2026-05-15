@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Вход в систему - BEACH STARS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center mt-5">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow-sm border-0 mt-4">
+            <div class="card-body p-4 p-md-5">
+                
+                <div class="text-center mb-4">
+                    <img src="{% static 'images/image_1.png' %}" alt="BEACH STARS" width="70" class="mb-3">
+                    <h2 class="fw-bold h4">Вход в панель управления</h2>
+                </div>
+
+                {% if form.errors and not form.non_field_errors %}
+                    <div class="alert alert-danger text-center small py-2">
+                        Пожалуйста, введите правильные данные.
+                    </div>
+                {% endif %}
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger text-center small py-2">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <div class="alert alert-warning text-center small py-2">
+                        У вас нет прав доступа к этой странице.
+                    </div>
+                {% endif %}
+
+                <form action="{{ app_path }}" method="post" id="login-form">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label text-muted fw-bold small text-uppercase">Email</label>
+                        <input type="email" name="username" class="form-control form-control-lg bg-light border-0" id="id_username" required autofocus placeholder="name@example.com">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label text-muted fw-bold small text-uppercase">Пароль</label>
+                        <input type="password" name="password" class="form-control form-control-lg bg-light border-0" id="id_password" required placeholder="••••••••">
+                        <input type="hidden" name="next" value="{{ next }}">
+                    </div>
+                    
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">Войти</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <a href="{% url 'home' %}" class="text-muted text-decoration-none small">← Вернуться на сайт</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
